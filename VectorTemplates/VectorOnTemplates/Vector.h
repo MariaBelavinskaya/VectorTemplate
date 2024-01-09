@@ -25,7 +25,7 @@
 		@brief Получение колличества элементов в векторе
 		@return Колличество элементов в векторе
 		*/
-		size_t getSize() const;
+		size_t getSize();
 
 		/*
 		@brief Удаление элемента из вектора по индексу элемента
@@ -116,7 +116,7 @@
 
 	};
 	template <typename T>
-	Vector<T>::Vector(const std::initializer_list<T> list)
+	inline Vector<T>::Vector(const std::initializer_list<T> list)
 		:size(list.size())
 	{
 		this->array = new int[this->size];
@@ -124,25 +124,27 @@
 	}
 
 	template <typename T>
-	Vector<T>::~Vector()
+	inline Vector<T>::~Vector()
 	{
 		delete[] this->array;
 	}
 
-	template <typename T>
-	void Vector<T>::getSize() const
+	template<typename T>
+	inline size_t Vector<T>::getSize()
 	{
 		return this->size;
 	}
 
+	
+
 	template <typename T>
-	bool Vector<T>::isEmpty() const
+	inline bool Vector<T>::isEmpty() const
 	{
 		return this->size == 0;
 	}
 
 	template <typename T>
-	Vector<T>& Vector<T>::operator=(const Vector& vector)
+	inline Vector<T>& Vector<T>::operator=(const Vector& vector)
 	{
 		if (vector == *this)
 		{
@@ -160,7 +162,7 @@
 	}
 
 	template <typename T>
-	Vector<T>&Vector<T>::operator=(Vector&& vector) noexcept
+	inline Vector<T>&Vector<T>::operator=(Vector&& vector) noexcept
 	{
 		std::swap(vector.array, this->array);
 		std::swap(vector.size, this->size);
@@ -168,14 +170,14 @@
 	}
 
 	template <typename T>
-	Vector<T>::Vector(const Vector& vector)
+	inline Vector<T>::Vector(const Vector& vector)
 		:size(vector.getSize()), array(nullptr)
 	{
 		std::copy(vector.array, vector.array + vector.getSize(), this->array);
 	}
 
 	template <typename T>
-	Vector<T>::Vector(Vector&& vector) noexcept
+	inline Vector<T>::Vector(Vector&& vector) noexcept
 		:size(0), array(nullptr)
 	{
 		std::swap(vector.array, this->array);
@@ -183,7 +185,7 @@
 	}
 
 	template <typename T>
-	T&Vector<T>::operator[](size_t index) const
+	inline T&Vector<T>::operator[](size_t index) const
 	{
 		if (this->isEmpty() || index >= this->size or index < 0)
 		{
@@ -193,7 +195,7 @@
 	}
 
 	template <typename T>
-	void Vector<T>::deleteI(size_t index)
+	inline void Vector<T>::deleteI(size_t index)
 	{
 		if (this->size == 0 or index < 0 or index >= this->size)
 		{
@@ -215,7 +217,7 @@
 	}
 
 	template <typename T>
-	bool Vector<T>::findI(const T& value)
+	inline bool Vector<T>::findI(const T& value)
 	{
 		if (this->isEmpty())
 		{
@@ -237,7 +239,7 @@
 	}
 
 	template <typename T>
-	std::string Vector<T>::toString() const noexcept
+	inline std::string Vector<T>::toString() const noexcept
 	{
 		std::stringstream sstring;
 		for (size_t i = 0; i < this->size; i++)
@@ -247,15 +249,20 @@
 		return sstring.str();
 	}
 
+	template <typename T>
+	inline std::ostream& operator<<(std::ostream& os, Vector<T>& vector)
+	{
+		return os << vector.toString();
+	}
 
 	template <typename T>
-	bool operator==(const Vector<T>& rha, const Vector<T>& lha) noexcept
+	inline bool operator==(const Vector<T>& rha, const Vector<T>& lha) noexcept
 	{
 		return (rha.toString() == lha.toString());
 	}
 
 	template <typename T>
-	bool operator!=(const Vector<T>& rha, const Vector<T>& lha) noexcept
+	inline bool operator!=(const Vector<T>& rha, const Vector<T>& lha) noexcept
 	{
 		return !(rha == lha);
 	}
