@@ -31,8 +31,6 @@
 		@brief Удаление элемента из вектора по индексу элемента
 		@param index Индекс элемента
 		*/
-
-
 		void deleteI(size_t index);
 
 		/*
@@ -40,7 +38,7 @@
 		@param value Элемент который мы ищем
 		@return Индекс элемента в векторе, вернет -1, если элемента в векторе нет
 		*/
-		bool findI(const T& value);
+		int findI(const T& value);
 
 		/*
 		@brief Проверка на отсутствие элементов в векторе
@@ -70,13 +68,13 @@
 		Vector& operator=(Vector<T>&& vector) noexcept;
 
 		/*
-		@brief Перегрузка конструктора перемещения
+		@brief Перегрузка конструктора копирования
 		@param vector Вектор для перемещния
 		*/
 		Vector(const Vector& vector);
 
 		/*
-		@brief Перегрузка конструктора копирования
+		@brief Перегрузка конструктор перемещ
 		@param vector Вектор для копирования
 		*/
 		Vector(Vector<T>&& vector) noexcept;
@@ -94,7 +92,7 @@
 		@param lha Второй аргумент для сравнения
 		@return false - если равны, true - если не равны
 		*/
-		friend bool operator==(const Vector<T>& rha, const Vector<T>& lha) noexcept;
+		bool operator==(Vector& second);
 
 		/*
 		@brief Перегрузка оператора не равно
@@ -102,7 +100,7 @@
 		@param lha Второй аргумент для сравнения
 		@return true - если равны, false - если не равны
 		*/
-		friend bool operator!=(const Vector<T>& rha, const Vector<T>& lha) noexcept;
+		bool operator!=(Vector& second);
 
 		/*
 		@brief Преобразование объета в строку
@@ -156,8 +154,9 @@
 			this->array = nullptr;
 			this->size = 0;
 		}
-		this->array = new T[this->size];
-		std::copy(vector.array, vector.array + vector.size, this->array);
+		Vector<T> temp(vector);
+		std::swap(temp.array, this->array);
+		std::swap(temp.size, this->size);
 		return *this;
 	}
 
@@ -173,7 +172,10 @@
 	inline Vector<T>::Vector(const Vector& vector)
 		:size(vector.getSize()), array(nullptr)
 	{
-		std::copy(vector.array, vector.array + vector.getSize(), this->array);
+		for (size_t i = 0; i <= size; i++)
+		{
+			array.push
+		}
 	}
 
 	template <typename T>
@@ -197,11 +199,11 @@
 	template <typename T>
 	inline void Vector<T>::deleteI(size_t index)
 	{
-		if (this->size == 0 or index < 0 or index >= this->size)
+		if (this->size == 0 || index >= this->size)
 		{
 			throw std::out_of_range("Incorrect Index");
 		}
-		T* vector1 = new int[this->size - 1];
+		T* vector1 = new T[this->size - 1];
 		T now = 0;
 		for (size_t i = 0; i < this->size; i++)
 		{
@@ -217,13 +219,13 @@
 	}
 
 	template <typename T>
-	inline bool Vector<T>::findI(const T& value)
+	inline int Vector<T>::findI(const T& value)
 	{
 		if (this->isEmpty())
 		{
 			return -1;
 		}
-		T index = 0;
+		size_t index = 0;
 		while ((index < this->size) && this->array[index] != value)
 		{
 			index++;
@@ -236,6 +238,12 @@
 		{
 			return index;
 		}
+	}
+
+	template<typename T>
+	inline bool Vector<T>::operator==(Vector& second)
+	{
+		return(this->toString() == second.toString());
 	}
 
 	template <typename T>
@@ -255,15 +263,10 @@
 		return os << vector.toString();
 	}
 
-	template <typename T>
-	inline bool operator==(const Vector<T>& rha, const Vector<T>& lha) noexcept
-	{
-		return (rha.toString() == lha.toString());
-	}
 
 	template <typename T>
-	inline bool operator!=(const Vector<T>& rha, const Vector<T>& lha) noexcept
+	inline bool Vector<T>::operator!=(Vector& second)
 	{
-		return !(rha == lha);
+		return !(this->toString() == second.toString());
 	}
 
